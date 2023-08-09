@@ -1,2 +1,10 @@
-# chess
-chess using SDL2
+# Description
+Chess using SDL2
+
+
+
+# Installation
+```shell
+make
+./build/debug/play
+```

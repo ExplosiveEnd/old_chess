@@ -16,20 +16,20 @@ int main(int argc, char *argv[])
 
     SDL_Event event;
 
-    SDL_Surface *img = SDL_LoadBMP("src/chess_board2.bmp");
+    // SDL_Surface *img = SDL_LoadBMP("src/chess_board2.bmp");
 
-    if(img == NULL){
-        SDL_ShowSimpleMessageBox(0,"Background Init Error", SDL_GetError(), win);
-    }
+    // if(img == NULL){
+    //     SDL_ShowSimpleMessageBox(0,"Background Init Error", SDL_GetError(), win);
+    // }
 
-    SDL_Texture *texture = SDL_CreateTextureFromSurface(renderer, img);
+    // SDL_Texture *texture = SDL_CreateTextureFromSurface(renderer, img);
     
     
 
-    SDL_RenderCopy(renderer, texture, NULL, NULL);
+    // SDL_RenderCopy(renderer, texture, NULL, NULL);
     
-    SDL_RenderPresent(renderer);
-
+    
+    
     
 
     bool isRunning = true;
@@ -49,10 +49,23 @@ int main(int argc, char *argv[])
         }
 
         SDL_RenderClear(renderer);
+        SDL_RenderPresent(renderer);
+
+        // Rectangle dimensions
+        SDL_Rect x;
+        x.x = 50;
+        x.y = 50;
+        x.h = 50;
+        x.w = 50;
+
+        // Colors rectangle
+        SDL_SetRenderDrawColor(renderer, 255, 0, 0, SDL_ALPHA_OPAQUE);
+
+        //SDL_FillRect(SDL_Render)
 
     }
-    SDL_DestroyTexture(texture);
-    SDL_FreeSurface(img);
+    // SDL_DestroyTexture(texture);
+    // SDL_FreeSurface(img);
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(win);
     SDL_Quit();

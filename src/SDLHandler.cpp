@@ -1,4 +1,5 @@
 #include "SDLHandler.h"
+#include "Piece.h"
 
 #define SCREEN_WIDTH 800
 #define SCREEN_HEIGHT 800
@@ -25,11 +26,13 @@ void SDLHandler::createBackground(){
         
         for(int i = 0; i < 8; i++){
             for(int j = 0; j < 8; j++){
-                SDL_Rect square;
-                square.x = height*j;
-                square.y = width*i;
-                square.w = width;
-                square.h = height;
+                SDL_Rect* square = new SDL_Rect();
+                square->x = width*j;
+                square->y = height*i;
+                square->w = width;
+                square->h = height;
+
+                squares.push_back(square);
 
                 if(i%2 == 0){
                     if(j%2 == 0){
@@ -48,10 +51,29 @@ void SDLHandler::createBackground(){
                     }
                 }
 
-                SDL_RenderFillRect(renderer, &square);
+                SDL_RenderFillRect(renderer, square);
             }
 
         }
 
-        SDL_RenderPresent(renderer);
+}
+
+void SDLHandler::setPieces(){
+
+    
+    for(int i = 0; i < 8; i++){
+        // Creates starting point
+        Point start;
+        start.x = i;
+        start.y = 1;
+        
+        // Adds piece information to pieces vector
+        pieces.push_back(new Piece(Type::PAWN, start));
+
+        // Gets sprite surface and displays
+        SDL_Texture* text = SDL_CreateTextureFromSurface(renderer, pieces[i]->getSprite(pieces[i]->type));
+        SDL_RenderCopy(renderer, text, NULL, squares.at(i));
+    }
+
+    SDL_RenderPresent(renderer);
 }

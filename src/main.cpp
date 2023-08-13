@@ -7,7 +7,7 @@ namespace Chess{
 
     void run() {
 
-        SDLHandler *handler;
+        SDLHandler *handler = new SDLHandler();
         handler->initialize();
 
         SDL_Event event;
@@ -27,6 +27,8 @@ namespace Chess{
                         }
                 }
                 handler->createBackground();
+                handler->setPieces();
+
             }
 
         }

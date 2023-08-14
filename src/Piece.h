@@ -7,7 +7,7 @@ struct Point{
 };
 
 enum Type: int32_t{
-    NONE = 0,
+    TYPE_NONE = 0,
     PAWN,
     ROOK,
     BISHOP,
@@ -16,17 +16,24 @@ enum Type: int32_t{
     KING
 };
 
+enum Color: int32_t{
+    COLOR_NONE=0,
+    BLACK,
+    WHITE
+};
+
 class Piece {
 public:
     SDL_Texture* sprite;
     Type type;
     Point point;
+    Color color;
 
     Piece(Type type);
 
-    Piece(Type type, Point point);
+    Piece(Type type, Point point, Color color);
 
-    SDL_Surface* getSprite(Type type);
+    SDL_Surface* getSprite(Type type, Color color);
 
 
 };

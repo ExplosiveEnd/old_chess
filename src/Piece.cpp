@@ -12,12 +12,29 @@ Piece::Piece(Type type, Point point){
 }
 
 SDL_Surface* Piece::getSprite(Type type){
+    SDL_Surface *surface;
     switch(type){
         case PAWN:
-            SDL_Surface *surface = SDL_LoadBMP("src/Pawn-1.bmp");
+             surface = IMG_Load("src/sprites/Pawn.png");
                 // if(surface == NULL)
                 //     SDL_ShowSimpleMessageBox(0,"Background Init Error", SDL_GetError(), SDLHandler::win);
-            return surface;
+            break;
+        case ROOK:
+             surface = IMG_Load("src/sprites/Rook.png");
+             break;
+        case BISHOP:
+            surface = IMG_Load("src/sprites/Bishop.png");
+            break;
+        case QUEEN:
+            surface = IMG_Load("src/sprites/Queen.png");
+            break;
+        case KING:
+            surface = IMG_Load("src/sprites/King.png");
+            break;
+        case KNIGHT:
+            surface = IMG_Load("src/sprites/Knight.png");
+            break;
     }
+    return surface;
 }
 

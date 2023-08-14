@@ -8,7 +8,12 @@ struct Point{
 
 enum Type: int32_t{
     NONE = 0,
-    PAWN
+    PAWN,
+    ROOK,
+    BISHOP,
+    QUEEN,
+    KNIGHT,
+    KING
 };
 
 class Piece {

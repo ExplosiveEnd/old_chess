@@ -1,5 +1,7 @@
 #include <iostream>
 #include <cstdint>
+#include <shlobj.h>
+#pragma comment(lib,"Shell32.lib")
 #include <string>
 
 #include "SDLHandler.h"

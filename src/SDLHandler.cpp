@@ -1,6 +1,6 @@
 #include "SDLHandler.h"
 #include "Piece.h"
-#include <SDL2/SDL_image.h>
+#include <SDL_image.h>
 #include <string>
 
 #define SCREEN_WIDTH 800

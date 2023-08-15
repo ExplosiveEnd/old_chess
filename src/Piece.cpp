@@ -1,5 +1,6 @@
 #include "Piece.h"
 #include "SDLHandler.h"
+#include <SDL_image.h>
 
 Piece::Piece(Type type){
     this->type = type;

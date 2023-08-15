@@ -1,6 +1,10 @@
 #pragma once
+<<<<<<< Updated upstream
 #include <SDL2/SDL.h>
 #include <string>
+=======
+#include <SDL.h>
+>>>>>>> Stashed changes
 
 struct Point{
     int32_t x;

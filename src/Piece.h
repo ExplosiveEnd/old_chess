@@ -1,5 +1,6 @@
 #pragma once
 #include <SDL2/SDL.h>
+#include <string>
 
 struct Point{
     int32_t x;
@@ -28,6 +29,8 @@ public:
     Type type;
     Point point;
     Color color;
+
+    std::string typeString;
 
     Piece(Type type);
 

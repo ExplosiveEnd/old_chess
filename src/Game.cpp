@@ -149,8 +149,8 @@ Piece* Game::getPiece(int32_t x, int32_t y) {
     }
 
     Point empty;
-    empty.x = NULL;
-    empty.y = NULL;
+    empty.x = -1;
+    empty.y = -1;
 
     // Creates empty piece if none with the coordinates are found (empty space)
     auto piece = new Piece(Type::TYPE_NONE, empty, Color::COLOR_NONE);
@@ -158,4 +158,36 @@ Piece* Game::getPiece(int32_t x, int32_t y) {
 
     return piece;
 
+}
+
+void Game::handleClick(){
+    if(this->mouseX == -1 && this->mouseY == -1){
+        SDL_GetMouseState(&this->mouseX, &this->mouseY);
+        this->mouseX = int(this->mouseX/100);
+        this->mouseY = int(this->mouseY/100);
+        this->selectedPiece = this->getPiece(this->mouseX, this->mouseY);
+        std::cout << "Point: (" << mouseX << ", " << mouseY <<")\n"; 
+        std::cout << "Piece: " << selectedPiece->typeString << "\n";
+    }
+    else{
+        Game::movePiece(this->selectedPiece);
+    }
+}
+
+void Game::movePiece(Piece* piece){
+    if(this->mouseX != -1 && this->mouseY != -1 && piece->type != TYPE_NONE){
+        int32_t nextClickX, nextClickY;
+
+        SDL_GetMouseState(&nextClickX, &nextClickY);
+        nextClickX = int(nextClickX/100);
+        nextClickY = int(nextClickY/100);
+        std::cout << "Next Click: (" << nextClickX << ", " << nextClickY << ") \n";
+        std::cout << "Piece: " << selectedPiece->typeString << "\n";
+        Game::selectedPiece->point.x = nextClickX;
+        Game::selectedPiece->point.y = nextClickY;
+
+        this->mouseX = -1;
+        this->mouseY = -1;
+                            
+    }
 }

@@ -2,8 +2,11 @@
 #include <cstdint>
 #include <string>
 
-#include <shlobj.h>
-#pragma comment(lib, "Shell32.lib")
+#ifdef _WIN32
+    #include <shlobj.h>
+    #pragma comment(lib, "Shell32.lib")
+#endif
+
 
 #include "SDLHandler.h"
 #include "Game.h"
@@ -25,7 +28,7 @@ namespace Chess{
         handler->renderPieces(game->pieces);
 
         bool isRunning = true;
-        int32_t mouseX = -1, mouseY = -1;
+        
         Piece* selectedPiece;
 
         while (isRunning) {
@@ -41,37 +44,22 @@ namespace Chess{
                             break;
                         }
                     case SDL_MOUSEBUTTONDOWN:
-                        if(mouseX != -1 && mouseY != -1 && selectedPiece->type != TYPE_NONE){
-                            int32_t nextClickX, nextClickY;
-            
-                            SDL_GetMouseState(&nextClickX, &nextClickY);
-                            nextClickX = int(nextClickX/100);
-                            nextClickY = int(nextClickY/100);
-                            std::cout << "Next Click: (" << nextClickX << ", " << nextClickY << ") \n";
-                            std::cout << "Piece: " << selectedPiece->typeString << "\n";
-                            selectedPiece->point.x = nextClickX;
-                            selectedPiece->point.y = nextClickY;
-                            
-                            mouseX = -1;
-                            mouseY = -1;
-                            SDL_RenderClear(handler->renderer);
+                        game->handleClick();
+                        SDL_RenderClear(handler->renderer);
+
+                        #ifdef _WIN32
                             handler->createBackground();
                             handler->renderPieces(game->pieces);
-                        }    
-                        else{
-                            SDL_GetMouseState(&mouseX, &mouseY);
-                            mouseX = int(mouseX/100);
-                            mouseY = int(mouseY/100);
-                            selectedPiece = game->getPiece(mouseX, mouseY);
-                            std::cout << "Point: (" << mouseX << ", " << mouseY <<")\n"; 
-                            std::cout << "Piece: " << selectedPiece->typeString << "\n";
-                        }
+                        #endif
+
                         break;
                 }
             }
 
-            
-
+            #ifdef __APPLE__
+                handler->createBackground();
+                handler->renderPieces(game->pieces);
+            #endif
             
 
             // Renders page

@@ -10,10 +10,7 @@ public:
     SDL_Renderer *renderer;
     SDL_Renderer *backlog;
 
-    // Texture for surfaces
-    //SDL_Texture* text;
-
-    //std::vector<Piece*> pieces;
+    // Vector containing board squares
     std::vector<SDL_Rect*> squares;
 
     // Initializes the window / renderer

@@ -9,18 +9,19 @@
 
 namespace Chess{
     void run() {
+        // Initializes the handler / creates the event for polling
         SDLHandler *handler = new SDLHandler();
         handler->initialize();
 
         SDL_Event event;
 
-        //handler->createBackground();
-        
-        
+        // Creates the initial background / pieces
+        handler->createBackground();
+        handler->setPieces();
         
 
         bool isRunning = true;
-        int32_t mouseX = NULL, mouseY = NULL;
+        int32_t mouseX = -1, mouseY = -1;
         Piece* selectedPiece;
 
         while (isRunning) {
@@ -36,7 +37,7 @@ namespace Chess{
                             break;
                         }
                     case SDL_MOUSEBUTTONDOWN:
-                        if(mouseX && mouseY){
+                        if(mouseX != -1 && mouseY != -1){
                             int32_t nextClickX, nextClickY;
             
                             SDL_GetMouseState(&nextClickX, &nextClickY);
@@ -47,9 +48,10 @@ namespace Chess{
                             selectedPiece->point.x = nextClickX;
                             selectedPiece->point.y = nextClickY;
                             
-                            mouseX = NULL;
-                            mouseY = NULL;
+                            mouseX = -1;
+                            mouseY = -1;
                             SDL_RenderClear(handler->renderer);
+                            handler->createBackground();
                             handler->renderPieces();
                         }    
                         else{
@@ -65,13 +67,10 @@ namespace Chess{
             }
 
             
-            handler->createBackground();
-            handler->setPieces();
 
             
 
             // Renders page
-            
             SDL_RenderPresent(handler->renderer);
 
         }

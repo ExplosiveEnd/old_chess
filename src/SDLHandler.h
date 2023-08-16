@@ -25,7 +25,5 @@ public:
     // Renders changes to pieces
     void renderPieces(std::vector<Piece*> pieces);
 
-    void movePiece(Piece* piece, int32_t x, int32_t y);
-
     
 };

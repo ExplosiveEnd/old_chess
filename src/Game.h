@@ -19,4 +19,6 @@ public:
     // Gets piece with coordinates
     Piece* getPiece(int32_t x, int32_t y);
 
+    void movePiece(Piece* piece, int32_t x, int32_t y);
+
 };

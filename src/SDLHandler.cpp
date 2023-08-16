@@ -106,8 +106,3 @@ void SDLHandler::renderPieces(std::vector<Piece*> pieces){
     }      
 
 }
-
-
-void SDLHandler::movePiece(Piece* piece, int32_t x, int32_t y){
-    return;
-}

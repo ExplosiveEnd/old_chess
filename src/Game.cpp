@@ -133,10 +133,28 @@ void Game::createPieces(SDL_Renderer* renderer) {
                 }
             }
         }
+        
 
         for (auto piece : Game::pieces) {
             text = SDL_CreateTextureFromSurface(renderer, piece->getSprite(piece->type, piece->color));
             piece->sprite = text;
+            this->coords.at(piece->point.y * 8 + piece->point.x) = piece;
+        }
+
+        Point empty;
+
+        std::cout << "Pieces using COORDS vector: \n";
+
+        for (int i = 0; i < 64; i++) {
+            if (!coords.at(i)) {
+                empty.x = i%8;
+                empty.y = i/10;
+                // Creates empty piece if none with the coordinates are found (empty space)
+                auto piece = new Piece(Type::TYPE_NONE, empty, Color::COLOR_NONE);
+                pieces.push_back(piece);
+                coords.at(i) = piece;
+            }
+            std::cout << "Piece of type: " << coords.at(i)->typeString << " at " << i << "\n";
         }
     }
 
@@ -148,15 +166,13 @@ Piece* Game::getPiece(int32_t x, int32_t y) {
             return piece;
     }
 
-    Point empty;
-    empty.x = -1;
-    empty.y = -1;
+    //Point empty;
+    //empty.x = -1;
+    //empty.y = -1;
 
-    // Creates empty piece if none with the coordinates are found (empty space)
-    auto piece = new Piece(Type::TYPE_NONE, empty, Color::COLOR_NONE);
-    pieces.push_back(piece);
-
-    return piece;
+    //// Creates empty piece if none with the coordinates are found (empty space)
+    //auto piece = new Piece(Type::TYPE_NONE, empty, Color::COLOR_NONE);
+    //pieces.push_back(piece);
 
 }
 
@@ -166,8 +182,10 @@ void Game::handleClick(){
         this->mouseX = int(this->mouseX/100);
         this->mouseY = int(this->mouseY/100);
         this->selectedPiece = this->getPiece(this->mouseX, this->mouseY);
-        std::cout << "Point: (" << mouseX << ", " << mouseY <<")\n"; 
+        std::cout << "First Click: (" << mouseX << ", " << mouseY <<")\n"; 
         std::cout << "Piece: " << selectedPiece->typeString << "\n";
+        this->secondClick = true;
+        this->setPossibleLocations(this->selectedPiece);
     }
     else{
         Game::movePiece(this->selectedPiece);
@@ -181,13 +199,24 @@ void Game::movePiece(Piece* piece){
         SDL_GetMouseState(&nextClickX, &nextClickY);
         nextClickX = int(nextClickX/100);
         nextClickY = int(nextClickY/100);
-        std::cout << "Next Click: (" << nextClickX << ", " << nextClickY << ") \n";
+        std::cout << "Second Click: (" << nextClickX << ", " << nextClickY << ") \n";
         std::cout << "Piece: " << selectedPiece->typeString << "\n";
         Game::selectedPiece->point.x = nextClickX;
         Game::selectedPiece->point.y = nextClickY;
 
         this->mouseX = -1;
-        this->mouseY = -1;
-                            
+        this->mouseY = -1;   
+        this->secondClick = false;
     }
+}
+
+void Game::setPossibleLocations(Piece* selected) {
+    std::cout << "Possible Locations: ";
+    for (int i = 0; i < 64; i++) {
+        //std::cout << "Piece type: " << coords.at(i)->typeString << " at " << i << "\n";
+        if (this->coords.at(i)->type == TYPE_NONE) {
+            this->possibleLocations.push_back(i);
+        }
+    }
+    std::cout << std::endl;
 }

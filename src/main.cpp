@@ -45,13 +45,17 @@ namespace Chess{
                         }
                     case SDL_MOUSEBUTTONDOWN:
                         game->handleClick();
-                        SDL_RenderClear(handler->renderer);
 
-                        #ifdef _WIN32
+                        if (game->secondClick) {
+                            handler->renderPossibleLocations(game->possibleLocations);
+                        }
+                        else {
+                            SDL_RenderClear(handler->renderer);
                             handler->createBackground();
                             handler->renderPieces(game->pieces);
-                        #endif
-
+                            SDL_RenderPresent(handler->renderer);
+                        }
+                        
                         break;
                 }
             }

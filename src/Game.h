@@ -18,6 +18,14 @@ public:
 
     // Vector containing all pieces on the board
     std::vector<Piece*> pieces;
+
+    bool secondClick = false;
+
+    //Proper piece coords
+    std::vector<Piece*> coords = std::vector<Piece*>(64);
+
+    // Vector containing possible move locations after click
+    std::vector<int> possibleLocations;
     
     // Creates Pieces and populates vector
     void createPieces(SDL_Renderer* renderer);
@@ -28,5 +36,7 @@ public:
     void movePiece(Piece* piece);
 
     void handleClick();
+
+    void setPossibleLocations(Piece* selected);
 
 };

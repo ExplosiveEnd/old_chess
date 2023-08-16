@@ -22,5 +22,7 @@ public:
     // Renders changes to pieces
     void renderPieces(std::vector<Piece*> pieces);
 
+    void renderPossibleLocations(std::vector<int> options);
+
     
 };

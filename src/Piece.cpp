@@ -42,6 +42,7 @@ SDL_Surface* Piece::getSprite(Type type, Color color){
             break;
         case TYPE_NONE:
             this->typeString = "NONE";
+            surface = NULL;
     }
     return surface;
 }

@@ -16,6 +16,10 @@ public:
     std::vector<Piece*> pieces;
     std::vector<SDL_Rect*> squares;
 
+    ~SDLHandler();
+
+
+    void before();
     void initialize();
     void createBackground();
 

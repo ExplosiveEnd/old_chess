@@ -7,63 +7,97 @@
 #define SCREEN_HEIGHT 800
 
 void SDLHandler::initialize(){
+
     SDL_Init(SDL_INIT_EVERYTHING);
     IMG_Init(IMG_INIT_PNG);
-    
+
     win = SDL_CreateWindow("CHESS",
                                     SDL_WINDOWPOS_CENTERED,
                                     SDL_WINDOWPOS_CENTERED,
                                         SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
 
     renderer = SDL_CreateRenderer(win, -1, 0);
+
+    SDL_SetRenderDrawColor(renderer, 0, 0, 0, SDL_ALPHA_OPAQUE);
+
+
+
 }
 
 void SDLHandler::createBackground(){
+
+        std::cout << "Rendering BACKGROUND\n";
+
         // Background color
-        SDL_SetRenderDrawColor(renderer, 0, 0, 0, SDL_ALPHA_OPAQUE);
-
-        SDL_RenderClear(renderer);
-
         int32_t width = SCREEN_WIDTH / 8;
         int32_t height = SCREEN_HEIGHT / 8;
-        
-        for(int i = 0; i < 8; i++){
-            for(int j = 0; j < 8; j++){
-                SDL_Rect* square = new SDL_Rect();
-                square->x = width*j;
-                square->y = height*i;
-                square->w = width;
-                square->h = height;
+        bool helper = false;
 
-                squares.push_back(square);
+        if (!SDLHandler::squares.size()) {
 
-                if(i%2 == 0){
-                    if(j%2 == 0){
-                        SDL_SetRenderDrawColor(renderer, 230, 204, 179, SDL_ALPHA_OPAQUE);
+            for (int i = 0; i < 8; i++) {
+                for (int j = 0; j < 8; j++) {
+                    SDL_Rect* square = new SDL_Rect();
+                    square->x = width * j;
+                    square->y = height * i;
+                    square->w = width;
+                    square->h = height;
+
+                    squares.push_back(square);
+
+                    if (i % 2 == 0) {
+                        if (j % 2 == 0) {
+                            SDL_SetRenderDrawColor(renderer, 230, 204, 179, SDL_ALPHA_OPAQUE);
+                        }
+                        else {
+                            SDL_SetRenderDrawColor(renderer, 172, 113, 57, SDL_ALPHA_OPAQUE);
+                        }
                     }
-                    else{
-                        SDL_SetRenderDrawColor(renderer, 172, 113, 57, SDL_ALPHA_OPAQUE);
+                    else {
+                        if (j % 2 != 0) {
+                            SDL_SetRenderDrawColor(renderer, 230, 204, 179, SDL_ALPHA_OPAQUE);
+                        }
+                        else {
+                            SDL_SetRenderDrawColor(renderer, 172, 113, 57, SDL_ALPHA_OPAQUE);
+                        }
                     }
+
+                    SDL_RenderFillRect(renderer, square);
                 }
-                else{
-                    if(j%2 != 0){
-                        SDL_SetRenderDrawColor(renderer, 230, 204, 179, SDL_ALPHA_OPAQUE);
-                    }
-                    else{
-                        SDL_SetRenderDrawColor(renderer, 172, 113, 57, SDL_ALPHA_OPAQUE);
-                    }
-                }
 
-                SDL_RenderFillRect(renderer, square);
             }
-
+        }
+        else {
+            for (int i = 0; i < SDLHandler::squares.size(); i++) {
+                if (i % 8 == 0) {
+                    helper = !helper;
+                }
+                if (i % 2 == 0) {
+                    if (helper) {
+                        SDL_SetRenderDrawColor(renderer, 230, 204, 179, SDL_ALPHA_OPAQUE);
+                        SDL_RenderFillRect(renderer, squares.at(i));
+                    }
+                    else {
+                        SDL_SetRenderDrawColor(renderer, 172, 113, 57, SDL_ALPHA_OPAQUE);
+                        SDL_RenderFillRect(renderer, squares.at(i));
+                    }
+                }
+                else {
+                    if (helper) {
+                        SDL_SetRenderDrawColor(renderer, 172, 113, 57, SDL_ALPHA_OPAQUE);
+                        SDL_RenderFillRect(renderer, squares.at(i));
+                    }
+                    else {
+                        SDL_SetRenderDrawColor(renderer, 230, 204, 179, SDL_ALPHA_OPAQUE);
+                        SDL_RenderFillRect(renderer, squares.at(i));
+                    }
+                }
+            }
         }
 
 }
 
 void SDLHandler::setPieces(){
-
-
     // Starting position struct
 
     if(!pieces.size()){
@@ -198,20 +232,26 @@ void SDLHandler::setPieces(){
                 }
             }
         }
+
+        for (auto piece : SDLHandler::pieces) {
+            text = SDL_CreateTextureFromSurface(renderer, piece->getSprite(piece->type, piece->color));
+            piece->sprite = text;    
+        }
     }
 
     renderPieces();
 }
 
-std::vector<int> locations;
 
 void SDLHandler::renderPieces(){
-        // Gets sprite surface and displays
-    for(auto piece : SDLHandler::pieces){
-        text = SDL_CreateTextureFromSurface(renderer, piece->getSprite(piece->type, piece->color));
-        SDL_RenderCopy(renderer, text, NULL, squares.at(piece->point.y*8+piece->point.x));
-        locations.push_back(piece->point.y*8+piece->point.x);
+    std::cout << "Rendering Pieces...\n";
+
+    // Gets sprite surface and displays
+    for (const auto& piece : SDLHandler::pieces) {
+        SDL_RenderCopy(renderer, piece->sprite, NULL, squares.at(piece->point.y * 8 + piece->point.x));
     }
+        
+
 }
 
 Piece* SDLHandler::getPiece(int32_t x, int32_t y){
@@ -220,6 +260,8 @@ Piece* SDLHandler::getPiece(int32_t x, int32_t y){
             return piece;
     }
     Point empty;
+    empty.x = NULL;
+    empty.y = NULL;
     return new Piece(Type::TYPE_NONE, empty, Color::COLOR_NONE);
 
 }

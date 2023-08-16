@@ -1,19 +1,22 @@
 #include <iostream>
 #include <cstdint>
-#include <shlobj.h>
-#pragma comment(lib,"Shell32.lib")
 #include <string>
+
+#include <shlobj.h>
+#pragma comment(lib, "Shell32.lib")
 
 #include "SDLHandler.h"
 
 namespace Chess{
-
     void run() {
-
         SDLHandler *handler = new SDLHandler();
         handler->initialize();
 
         SDL_Event event;
+
+        //handler->createBackground();
+        
+        
         
 
         bool isRunning = true;
@@ -46,6 +49,8 @@ namespace Chess{
                             
                             mouseX = NULL;
                             mouseY = NULL;
+                            SDL_RenderClear(handler->renderer);
+                            handler->renderPieces();
                         }    
                         else{
                             SDL_GetMouseState(&mouseX, &mouseY);
@@ -54,21 +59,29 @@ namespace Chess{
                             selectedPiece = handler->getPiece(mouseX, mouseY);
                             std::cout << "Point: (" << mouseX << ", " << mouseY <<")\n"; 
                             std::cout << "Piece: " << selectedPiece->typeString << "\n";
-
                         }
                         break;
                 }
             }
-            SDL_RenderClear(handler->renderer);
 
+            
             handler->createBackground();
-            handler->setPieces(); 
+            handler->setPieces();
+
+            
+
             // Renders page
+            
             SDL_RenderPresent(handler->renderer);
 
         }
+
+        SDL_DestroyWindow(handler->win);
+
+        SDL_Quit();
+
     }
-    
+
 
 }
 

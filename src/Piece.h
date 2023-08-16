@@ -1,10 +1,8 @@
 #pragma once
-<<<<<<< Updated upstream
-#include <SDL2/SDL.h>
 #include <string>
-=======
 #include <SDL.h>
->>>>>>> Stashed changes
+#include <iostream>
+
 
 struct Point{
     int32_t x;
@@ -37,6 +35,10 @@ public:
     std::string typeString;
 
     Piece(Type type);
+
+    ~Piece() {
+        std::cout << "Delete Piece\n";
+    }
 
     Piece(Type type, Point point, Color color);
 

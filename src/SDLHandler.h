@@ -11,23 +11,21 @@ public:
     SDL_Renderer *backlog;
 
     // Texture for surfaces
-    SDL_Texture* text;
+    //SDL_Texture* text;
 
-    std::vector<Piece*> pieces;
+    //std::vector<Piece*> pieces;
     std::vector<SDL_Rect*> squares;
 
-    ~SDLHandler();
-
-
-    void before();
+    // Initializes the window / renderer
     void initialize();
+
+    // Creates background
     void createBackground();
 
-    void setPieces();
-
-    void renderPieces();
+    // Renders changes to pieces
+    void renderPieces(std::vector<Piece*> pieces);
 
     void movePiece(Piece* piece, int32_t x, int32_t y);
 
-    Piece* getPiece(int32_t x, int32_t y);
+    
 };

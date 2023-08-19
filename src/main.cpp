@@ -25,7 +25,7 @@ namespace Chess{
         // Creates the initial background / pieces
         handler->createBackground();
         game->createPieces(handler->renderer);
-        handler->renderPieces(game->pieces);
+        handler->renderPieces(game->coords);
 
         bool isRunning = true;
         
@@ -52,7 +52,8 @@ namespace Chess{
                         else {
                             SDL_RenderClear(handler->renderer);
                             handler->createBackground();
-                            handler->renderPieces(game->pieces);
+                            //game->sortCoords();
+                            handler->renderPieces(game->coords);
                             SDL_RenderPresent(handler->renderer);
                         }
                         

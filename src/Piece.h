@@ -9,6 +9,7 @@ struct Point{
     int32_t y;
 };
 
+
 enum Type: int32_t{
     TYPE_NONE = 0,
     PAWN,
@@ -36,8 +37,8 @@ public:
 
     Piece(Type type);
 
-    ~Piece() {
-        std::cout << "Delete Piece\n";
+    bool operator< (const Piece &other) {
+        return (point.y * 8 + point.x) < (other.point.y * 8 + other.point.x);
     }
 
     Piece(Type type, Point point, Color color);
@@ -45,4 +46,10 @@ public:
     SDL_Surface* getSprite(Type type, Color color);
 
 
+};
+
+struct less_than_point {
+    bool operator()(const Piece* p1, const Piece* p2) {
+        return (p1->point.y * 8 + p1->point.x) < (p2->point.y * 8 + p2->point.x);
+    }
 };

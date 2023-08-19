@@ -4,6 +4,7 @@
 #include <SDL.h>
 #include <vector>
 #include "Piece.h"
+#include <algorithm>
 
 class Game{
 public:
@@ -18,6 +19,7 @@ public:
 
     // Vector containing all pieces on the board
     std::vector<Piece*> pieces;
+
 
     bool secondClick = false;
 
@@ -38,5 +40,7 @@ public:
     void handleClick();
 
     void setPossibleLocations(Piece* selected);
+
+    void sortCoords();
 
 };

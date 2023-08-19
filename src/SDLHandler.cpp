@@ -3,8 +3,9 @@
 #include <SDL_image.h>
 #include <string>
 
-#define SCREEN_WIDTH 800
-#define SCREEN_HEIGHT 800
+
+constexpr int32_t SCREEN_WIDTH = 800;
+constexpr int32_t SCREEN_HEIGHT = 800;
 
 void SDLHandler::initialize(){
 
@@ -98,14 +99,19 @@ void SDLHandler::createBackground(){
 }
 
 void SDLHandler::renderPieces(std::vector<Piece*> pieces){
-    std::cout << "Rendering Pieces...\n";
+    std::cout << "Rendering Pieces...\n" << "Size: " << pieces.size() << "\n";
+    std::cout << "Pre-render pieces: ";
+    for (const auto x : pieces) {
+        std::cout << x->typeString << " ";
+    }
 
     // Gets sprite surface and displays
     for (const auto& piece : pieces) {
-        if(piece->type != TYPE_NONE)
+        //std::cout << "Piece: " << piece->typeString << "\n";
+        if (piece->type != TYPE_NONE) {
             SDL_RenderCopy(renderer, piece->sprite, NULL, squares.at(piece->point.y * 8 + piece->point.x));
-    }      
-
+        }
+    }
 }
 
 void SDLHandler::renderPossibleLocations(std::vector<int> options) {

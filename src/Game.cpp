@@ -327,6 +327,37 @@ void Game::setPossibleLocations(Piece* selected) {
         }
         break;
 
+        case(Type::KING):
+            // ABOVE
+            if (selected->point.y > 0) {
+                // TOP-LEFT
+                if (selected->point.x > 0)
+                    this->possibleLocations.push_back((selected->point.y - 1) * 8 + (selected->point.x-1));
+                // TOP-RIGHT
+                if(selected->point.x < 7)
+                    this->possibleLocations.push_back((selected->point.y - 1) * 8 + (selected->point.x + 1));
+                this->possibleLocations.push_back((selected->point.y - 1) * 8 + selected->point.x);
+            }
+            // BELOW
+            if (selected->point.y < 7) {
+                // BOTTOM-LEFT
+                if (selected->point.x > 0)
+                    this->possibleLocations.push_back((selected->point.y + 1) * 8 + (selected->point.x - 1));
+                // BOTTOM-RIGHT
+                if (selected->point.x < 7)
+                    this->possibleLocations.push_back((selected->point.y + 1) * 8 + (selected->point.x + 1));
+                this->possibleLocations.push_back((selected->point.y + 1) * 8 + selected->point.x);
+            }
+            // LEFT
+            if (selected->point.x > 0) {
+                this->possibleLocations.push_back(selected->point.y * 8 + (selected->point.x - 1));
+            }
+            // RIGHT
+            if (selected->point.x < 7) {
+                this->possibleLocations.push_back(selected->point.y * 8 + (selected->point.x+1));
+            }
+            break;
+
         default:
             if (this->coords.at(i)->type == TYPE_NONE) {
                 this->possibleLocations.push_back(i);

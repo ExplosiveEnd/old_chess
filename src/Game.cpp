@@ -281,8 +281,10 @@ void Game::setPossibleLocations(Piece* selected) {
             break;
         case(Type::ROOK):
             for (int i = 0; i < 8; i++) {
-                this->possibleLocations.push_back(i * 8 + selected->point.x);
-                this->possibleLocations.push_back(selected->point.y*8 + i);
+                if (selected->point.y != i)
+                    this->possibleLocations.push_back(i * 8 + selected->point.x);
+                if (selected->point.x != i)
+                    this->possibleLocations.push_back(selected->point.y * 8 + i);
             }
             break;
         case(Type::BISHOP):
@@ -291,6 +293,9 @@ void Game::setPossibleLocations(Piece* selected) {
             int32_t yClone = selected->point.y;
             int32_t xClone = selected->point.x;
             while (yClone > 0 && xClone > 0) {
+                if (coords.at((yClone - 1) * 8 + (xClone - 1))->type != Type::TYPE_NONE) {
+                    break;
+                }
                 this->possibleLocations.push_back((yClone - 1) * 8 + (xClone - 1));
                 yClone--;
                 xClone--;
@@ -301,6 +306,9 @@ void Game::setPossibleLocations(Piece* selected) {
             yClone = selected->point.y;
             xClone = selected->point.x;
             while (yClone > 0 && xClone < 7) {
+                if (coords.at((yClone - 1) * 8 + (xClone + 1))->type != Type::TYPE_NONE) {
+                    break;
+                }
                 this->possibleLocations.push_back((yClone - 1) * 8 + (xClone + 1));
                 yClone--;
                 xClone++;
@@ -311,6 +319,9 @@ void Game::setPossibleLocations(Piece* selected) {
             yClone = selected->point.y;
             xClone = selected->point.x;
             while (yClone < 7 && xClone > 0) {
+                if (coords.at((yClone + 1) * 8 + (xClone - 1))->type != Type::TYPE_NONE) {
+                    break;
+                }
                 this->possibleLocations.push_back((yClone + 1) * 8 + (xClone - 1));
                 yClone++;
                 xClone--;
@@ -320,6 +331,9 @@ void Game::setPossibleLocations(Piece* selected) {
             yClone = selected->point.y;
             xClone = selected->point.x;
             while (yClone < 7 && xClone < 7) {
+                if (coords.at((yClone + 1) * 8 + (xClone + 1))->type != Type::TYPE_NONE) {
+                    break;
+                }
                 this->possibleLocations.push_back((yClone + 1) * 8 + (xClone + 1));
                 yClone++;
                 xClone++;
@@ -355,6 +369,96 @@ void Game::setPossibleLocations(Piece* selected) {
             // RIGHT
             if (selected->point.x < 7) {
                 this->possibleLocations.push_back(selected->point.y * 8 + (selected->point.x+1));
+            }
+            break;
+
+        case(Type::KNIGHT):
+            // ABOVE CHECK
+            if (selected->point.y > 1) {
+                // ABOVE-LEFT
+                if (selected->point.x > 0)
+                    this->possibleLocations.push_back((selected->point.y - 2) * 8 + (selected->point.x - 1));
+                // ABOVE-RIGHT
+                if (selected->point.x < 7)
+                    this->possibleLocations.push_back((selected->point.y - 2) * 8 + (selected->point.x + 1));
+            }
+            // BELOW CHECK
+            if (selected->point.y < 6) {
+                // BELOW-LEFT
+                if (selected->point.x > 0)
+                    this->possibleLocations.push_back((selected->point.y + 2) * 8 + (selected->point.x - 1));
+                // BELOW-RIGHT
+                if (selected->point.x < 7)
+                    this->possibleLocations.push_back((selected->point.y + 2) * 8 + (selected->point.x + 1));
+            }
+            // LEFT CHECK
+            if (selected->point.x > 1) {
+                // LEFT-ABOVE
+                if (selected->point.y > 0)
+                    this->possibleLocations.push_back((selected->point.y - 1) * 8 + (selected->point.x - 2));
+                // LEFT-BELOW
+                if (selected->point.y < 7)
+                    this->possibleLocations.push_back((selected->point.y + 1) * 8 + (selected->point.x - 2));
+            }
+            // RIGHT CHECK
+            if (selected->point.x < 6) {
+                // RIGHT-ABOVE
+                if (selected->point.y > 0)
+                    this->possibleLocations.push_back((selected->point.y - 1) * 8 + (selected->point.x + 2));
+                // RIGHT-BELOW
+                if (selected->point.y < 7)
+                    this->possibleLocations.push_back((selected->point.y + 1) * 8 + (selected->point.x + 2));
+            }
+            break;
+
+        case(Type::QUEEN):
+            // BISHOP ABILITIES
+            {
+                // North-West
+                int32_t yClone = selected->point.y;
+                int32_t xClone = selected->point.x;
+                while (yClone > 0 && xClone > 0) {
+                    this->possibleLocations.push_back((yClone - 1) * 8 + (xClone - 1));
+                    yClone--;
+                    xClone--;
+                }
+
+
+                // North-East
+                yClone = selected->point.y;
+                xClone = selected->point.x;
+                while (yClone > 0 && xClone < 7) {
+                    this->possibleLocations.push_back((yClone - 1) * 8 + (xClone + 1));
+                    yClone--;
+                    xClone++;
+                }
+
+
+                // South-West
+                yClone = selected->point.y;
+                xClone = selected->point.x;
+                while (yClone < 7 && xClone > 0) {
+                    this->possibleLocations.push_back((yClone + 1) * 8 + (xClone - 1));
+                    yClone++;
+                    xClone--;
+                }
+
+                // South-East
+                yClone = selected->point.y;
+                xClone = selected->point.x;
+                while (yClone < 7 && xClone < 7) {
+                    this->possibleLocations.push_back((yClone + 1) * 8 + (xClone + 1));
+                    yClone++;
+                    xClone++;
+                }
+            }
+
+            // ROOK ABILITIES
+            for (int i = 0; i < 8; i++) {
+                if(selected->point.y != i)
+                    this->possibleLocations.push_back(i * 8 + selected->point.x);
+                if(selected->point.x != i)
+                    this->possibleLocations.push_back(selected->point.y * 8 + i);
             }
             break;
 

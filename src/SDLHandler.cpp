@@ -116,9 +116,10 @@ void SDLHandler::renderPieces(std::vector<Piece*> pieces){
 
 void SDLHandler::renderPossibleLocations(std::vector<int> options) {
     std::cout << "Rendering possible locations... \n";
-    SDL_SetRenderDrawColor(this->renderer, 0, 0, 240, SDL_ALPHA_OPAQUE);
+    SDL_SetRenderDrawColor(this->renderer, 255, 235, 153, SDL_ALPHA_OPAQUE);
     for (const int& location : options) {
-        SDL_RenderFillRect(renderer, this->squares.at(location));
+        if(squares.at(location))
+            SDL_RenderFillRect(renderer, this->squares.at(location));
     }
     SDL_RenderPresent(renderer);
 }

@@ -33,6 +33,8 @@ public:
     Point point;
     Color color;
 
+    bool pawnFirstMove = false;
+
     std::string typeString;
 
     Piece(Type type);

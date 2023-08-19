@@ -206,8 +206,8 @@ void Game::handleClick(){
         }
     }
     else{
-        this->possibleLocations.clear();
         Game::movePiece(this->selectedPiece);
+        this->possibleLocations.clear();
     }
 }
 
@@ -229,14 +229,19 @@ void Game::movePiece(Piece* piece){
     int32_t oldX = piece->point.x;
     int32_t oldY = piece->point.y;
         
-    piece->point.x = nextClickX;
-    piece->point.y = nextClickY;
 
     auto replaced = coords.at(nextClickY * 8 + nextClickX);
     std::cout << "Replacing " << replaced->typeString << std::endl;
+    
+    // Ensures the second click is a validMove
+    auto it = std::find(this->possibleLocations.begin(), this->possibleLocations.end(), nextClickY * 8 + nextClickX);
+    if (it != possibleLocations.end()) {
+        piece->point.x = nextClickX;
+        piece->point.y = nextClickY;
 
-    replaced->point.x = oldX;
-    replaced->point.y = oldY;
+        replaced->point.x = oldX;
+        replaced->point.y = oldY;
+    }
 
     std::cout << "Coords post-move check: ";
     for (const auto x : coords) {
@@ -256,11 +261,85 @@ void Game::setPossibleLocations(Piece* selected) {
     std::cout << "Possible Locations: ";
     for (int i = 0; i < 64; i++) {
         //std::cout << "Piece type: " << coords.at(i)->typeString << " at " << i << "\n";
-        if (this->coords.at(i)->type == TYPE_NONE) {
-            this->possibleLocations.push_back(i);
-            std::cout << i << " ";
+        switch (selected->type) {
+        case(Type::PAWN):
+            // Checks if pawn can move up two / one
+            if (selected->pawnFirstMove) {
+                // Checks if pawn is at END
+                if (selected->point.y == 0) {
+                    break;
+                }
+                else {
+                    this->possibleLocations.push_back((selected->point.y - 1) * 8 + selected->point.x);
+                    this->possibleLocations.push_back((selected->point.y - 2) * 8 + selected->point.x);
+                    selected->pawnFirstMove = false;
+                }
+            }
+            else {
+                this->possibleLocations.push_back((selected->point.y - 1) * 8 + selected->point.x);
+            }
+            break;
+        case(Type::ROOK):
+            for (int i = 0; i < 8; i++) {
+                this->possibleLocations.push_back(i * 8 + selected->point.x);
+                this->possibleLocations.push_back(selected->point.y*8 + i);
+            }
+            break;
+        case(Type::BISHOP):
+        {
+            // North-West
+            int32_t yClone = selected->point.y;
+            int32_t xClone = selected->point.x;
+            while (yClone > 0 && xClone > 0) {
+                this->possibleLocations.push_back((yClone - 1) * 8 + (xClone - 1));
+                yClone--;
+                xClone--;
+            }
+
+
+            // North-East
+            yClone = selected->point.y;
+            xClone = selected->point.x;
+            while (yClone > 0 && xClone < 7) {
+                this->possibleLocations.push_back((yClone - 1) * 8 + (xClone + 1));
+                yClone--;
+                xClone++;
+            }
+
+
+            // South-West
+            yClone = selected->point.y;
+            xClone = selected->point.x;
+            while (yClone < 7 && xClone > 0) {
+                this->possibleLocations.push_back((yClone + 1) * 8 + (xClone - 1));
+                yClone++;
+                xClone--;
+            }
+
+            // South-East
+            yClone = selected->point.y;
+            xClone = selected->point.x;
+            while (yClone < 7 && xClone < 7) {
+                this->possibleLocations.push_back((yClone + 1) * 8 + (xClone + 1));
+                yClone++;
+                xClone++;
+            }
         }
+        break;
+
+        default:
+            if (this->coords.at(i)->type == TYPE_NONE) {
+                this->possibleLocations.push_back(i);
+                std::cout << i << " ";
+            }
+            break;
+        }
+
     }
+}
+
+bool validMove() {
+    return false;
 }
 
 void Game::sortCoords() {

@@ -19,6 +19,7 @@ SDL_Surface* Piece::getSprite(Type type, Color color){
         case PAWN:
             surface = this->color == Color::BLACK ? IMG_Load("src/sprites/Pawn.png") : IMG_Load("src/sprites/WhitePawn.png");
             this->typeString = "PAWN";
+            this->pawnFirstMove = true;
             break;
         case ROOK:
              surface = this->color == Color::BLACK ? IMG_Load("src/sprites/Rook.png") : IMG_Load("src/sprites/WhiteRook.png");

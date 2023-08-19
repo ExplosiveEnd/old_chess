@@ -233,7 +233,7 @@ void Game::movePiece(Piece* piece){
     auto replaced = coords.at(nextClickY * 8 + nextClickX);
     std::cout << "Replacing " << replaced->typeString << std::endl;
     
-    // Ensures the second click is a validMove
+    // Ensures the second click is a validMove (EMPTY target)
     auto it = std::find(this->possibleLocations.begin(), this->possibleLocations.end(), nextClickY * 8 + nextClickX);
     if (it != possibleLocations.end()) {
         piece->point.x = nextClickX;
@@ -280,12 +280,52 @@ void Game::setPossibleLocations(Piece* selected) {
             }
             break;
         case(Type::ROOK):
-            for (int i = 0; i < 8; i++) {
-                if (selected->point.y != i)
-                    this->possibleLocations.push_back(i * 8 + selected->point.x);
-                if (selected->point.x != i)
-                    this->possibleLocations.push_back(selected->point.y * 8 + i);
+        {
+            int32_t yClone = selected->point.y;
+            int32_t xClone = selected->point.x;
+            
+            // ABOVE
+            while (yClone >= 0) {
+
+                if (yClone != selected->point.y) {
+                    if (coords.at(yClone * 8 + selected->point.x)->type != Type::TYPE_NONE)
+                        break;
+                    this->possibleLocations.push_back(yClone * 8 + selected->point.x);
+                }   
+                yClone--;
             }
+
+            // BELOW
+            yClone = selected->point.y;
+            while (yClone <= 7) {
+                if (yClone != selected->point.y) {
+                    if (coords.at(yClone * 8 + selected->point.x)->type != Type::TYPE_NONE)
+                        break;
+                    this->possibleLocations.push_back(yClone * 8 + selected->point.x);
+                }
+ 
+                yClone++;
+            }
+            // LEFT
+            while (xClone >= 0) {
+                if (xClone != selected->point.x) {
+                    if (coords.at(selected->point.y * 8 + xClone)->type != Type::TYPE_NONE)
+                        break;
+                    this->possibleLocations.push_back(selected->point.y * 8 + xClone);
+                }   
+                xClone--;
+            }
+            // RIGHT
+            xClone = selected->point.x;
+            while (xClone <= 7) {
+                if (xClone != selected->point.x) {
+                    if (coords.at(selected->point.y * 8 + xClone)->type != Type::TYPE_NONE)
+                        break;
+                    this->possibleLocations.push_back(selected->point.y * 8 + xClone);
+                }
+                xClone++;
+            }
+        }
             break;
         case(Type::BISHOP):
         {
@@ -345,30 +385,34 @@ void Game::setPossibleLocations(Piece* selected) {
             // ABOVE
             if (selected->point.y > 0) {
                 // TOP-LEFT
-                if (selected->point.x > 0)
+                if (selected->point.x > 0 && coords.at((selected->point.y - 1) * 8 + (selected->point.x - 1))->type == Type::TYPE_NONE)
                     this->possibleLocations.push_back((selected->point.y - 1) * 8 + (selected->point.x-1));
                 // TOP-RIGHT
-                if(selected->point.x < 7)
+                if(selected->point.x < 7 && coords.at((selected->point.y - 1) * 8 + (selected->point.x + 1))->type == Type::TYPE_NONE)
                     this->possibleLocations.push_back((selected->point.y - 1) * 8 + (selected->point.x + 1));
-                this->possibleLocations.push_back((selected->point.y - 1) * 8 + selected->point.x);
+                if (coords.at((selected->point.y - 1) * 8 + selected->point.x)->type == Type::TYPE_NONE)
+                    this->possibleLocations.push_back((selected->point.y - 1) * 8 + selected->point.x);
             }
             // BELOW
             if (selected->point.y < 7) {
                 // BOTTOM-LEFT
-                if (selected->point.x > 0)
+                if (selected->point.x > 0 && coords.at((selected->point.y + 1) * 8 + (selected->point.x - 1))->type == Type::TYPE_NONE)
                     this->possibleLocations.push_back((selected->point.y + 1) * 8 + (selected->point.x - 1));
                 // BOTTOM-RIGHT
-                if (selected->point.x < 7)
+                if (selected->point.x < 7 && coords.at((selected->point.y + 1) * 8 + (selected->point.x + 1))->type == Type::TYPE_NONE)
                     this->possibleLocations.push_back((selected->point.y + 1) * 8 + (selected->point.x + 1));
-                this->possibleLocations.push_back((selected->point.y + 1) * 8 + selected->point.x);
+                if(coords.at((selected->point.y + 1) * 8 + selected->point.x)->type == Type::TYPE_NONE)
+                    this->possibleLocations.push_back((selected->point.y + 1) * 8 + selected->point.x);
             }
             // LEFT
             if (selected->point.x > 0) {
-                this->possibleLocations.push_back(selected->point.y * 8 + (selected->point.x - 1));
+                if(coords.at(selected->point.y * 8 + (selected->point.x - 1))->type == Type::TYPE_NONE)
+                    this->possibleLocations.push_back(selected->point.y * 8 + (selected->point.x - 1));
             }
             // RIGHT
             if (selected->point.x < 7) {
-                this->possibleLocations.push_back(selected->point.y * 8 + (selected->point.x+1));
+                if (coords.at(selected->point.y * 8 + (selected->point.x + 1))->type == Type::TYPE_NONE)
+                    this->possibleLocations.push_back(selected->point.y * 8 + (selected->point.x+1));
             }
             break;
 
@@ -376,90 +420,142 @@ void Game::setPossibleLocations(Piece* selected) {
             // ABOVE CHECK
             if (selected->point.y > 1) {
                 // ABOVE-LEFT
-                if (selected->point.x > 0)
+                if (selected->point.x > 0 && coords.at((selected->point.y - 2) * 8 + (selected->point.x - 1))->type == Type::TYPE_NONE)
                     this->possibleLocations.push_back((selected->point.y - 2) * 8 + (selected->point.x - 1));
                 // ABOVE-RIGHT
-                if (selected->point.x < 7)
+                if (selected->point.x < 7 && coords.at((selected->point.y - 2) * 8 + (selected->point.x + 1))->type == Type::TYPE_NONE)
                     this->possibleLocations.push_back((selected->point.y - 2) * 8 + (selected->point.x + 1));
             }
             // BELOW CHECK
             if (selected->point.y < 6) {
                 // BELOW-LEFT
-                if (selected->point.x > 0)
+                if (selected->point.x > 0 && coords.at((selected->point.y + 2) * 8 + (selected->point.x - 1))->type == Type::TYPE_NONE)
                     this->possibleLocations.push_back((selected->point.y + 2) * 8 + (selected->point.x - 1));
                 // BELOW-RIGHT
-                if (selected->point.x < 7)
+                if (selected->point.x < 7 && coords.at((selected->point.y + 2) * 8 + (selected->point.x + 1))->type == Type::TYPE_NONE)
                     this->possibleLocations.push_back((selected->point.y + 2) * 8 + (selected->point.x + 1));
             }
             // LEFT CHECK
             if (selected->point.x > 1) {
                 // LEFT-ABOVE
-                if (selected->point.y > 0)
+                if (selected->point.y > 0 && coords.at((selected->point.y - 1) * 8 + (selected->point.x - 2))->type == Type::TYPE_NONE)
                     this->possibleLocations.push_back((selected->point.y - 1) * 8 + (selected->point.x - 2));
                 // LEFT-BELOW
-                if (selected->point.y < 7)
+                if (selected->point.y < 7 && coords.at((selected->point.y + 1) * 8 + (selected->point.x - 2))->type == Type::TYPE_NONE)
                     this->possibleLocations.push_back((selected->point.y + 1) * 8 + (selected->point.x - 2));
             }
             // RIGHT CHECK
             if (selected->point.x < 6) {
                 // RIGHT-ABOVE
-                if (selected->point.y > 0)
+                if (selected->point.y > 0 && coords.at((selected->point.y - 1) * 8 + (selected->point.x + 2))->type == Type::TYPE_NONE)
                     this->possibleLocations.push_back((selected->point.y - 1) * 8 + (selected->point.x + 2));
                 // RIGHT-BELOW
-                if (selected->point.y < 7)
+                if (selected->point.y < 7 && coords.at((selected->point.y + 1) * 8 + (selected->point.x + 2))->type == Type::TYPE_NONE)
                     this->possibleLocations.push_back((selected->point.y + 1) * 8 + (selected->point.x + 2));
             }
             break;
 
         case(Type::QUEEN):
             // BISHOP ABILITIES
-            {
-                // North-West
-                int32_t yClone = selected->point.y;
-                int32_t xClone = selected->point.x;
-                while (yClone > 0 && xClone > 0) {
-                    this->possibleLocations.push_back((yClone - 1) * 8 + (xClone - 1));
-                    yClone--;
-                    xClone--;
+        {
+            // North-West
+            int32_t yClone = selected->point.y;
+            int32_t xClone = selected->point.x;
+            while (yClone > 0 && xClone > 0) {
+                if (coords.at((yClone - 1) * 8 + (xClone - 1))->type != Type::TYPE_NONE) {
+                    break;
                 }
-
-
-                // North-East
-                yClone = selected->point.y;
-                xClone = selected->point.x;
-                while (yClone > 0 && xClone < 7) {
-                    this->possibleLocations.push_back((yClone - 1) * 8 + (xClone + 1));
-                    yClone--;
-                    xClone++;
-                }
-
-
-                // South-West
-                yClone = selected->point.y;
-                xClone = selected->point.x;
-                while (yClone < 7 && xClone > 0) {
-                    this->possibleLocations.push_back((yClone + 1) * 8 + (xClone - 1));
-                    yClone++;
-                    xClone--;
-                }
-
-                // South-East
-                yClone = selected->point.y;
-                xClone = selected->point.x;
-                while (yClone < 7 && xClone < 7) {
-                    this->possibleLocations.push_back((yClone + 1) * 8 + (xClone + 1));
-                    yClone++;
-                    xClone++;
-                }
+                this->possibleLocations.push_back((yClone - 1) * 8 + (xClone - 1));
+                yClone--;
+                xClone--;
             }
+
+
+            // North-East
+            yClone = selected->point.y;
+            xClone = selected->point.x;
+            while (yClone > 0 && xClone < 7) {
+                if (coords.at((yClone - 1) * 8 + (xClone + 1))->type != Type::TYPE_NONE) {
+                    break;
+                }
+                this->possibleLocations.push_back((yClone - 1) * 8 + (xClone + 1));
+                yClone--;
+                xClone++;
+            }
+
+
+            // South-West
+            yClone = selected->point.y;
+            xClone = selected->point.x;
+            while (yClone < 7 && xClone > 0) {
+                if (coords.at((yClone + 1) * 8 + (xClone - 1))->type != Type::TYPE_NONE) {
+                    break;
+                }
+                this->possibleLocations.push_back((yClone + 1) * 8 + (xClone - 1));
+                yClone++;
+                xClone--;
+            }
+
+            // South-East
+            yClone = selected->point.y;
+            xClone = selected->point.x;
+            while (yClone < 7 && xClone < 7) {
+                if (coords.at((yClone + 1) * 8 + (xClone + 1))->type != Type::TYPE_NONE) {
+                    break;
+                }
+                this->possibleLocations.push_back((yClone + 1) * 8 + (xClone + 1));
+                yClone++;
+                xClone++;
+            }
+        }
 
             // ROOK ABILITIES
-            for (int i = 0; i < 8; i++) {
-                if(selected->point.y != i)
-                    this->possibleLocations.push_back(i * 8 + selected->point.x);
-                if(selected->point.x != i)
-                    this->possibleLocations.push_back(selected->point.y * 8 + i);
+        {
+            int32_t yClone = selected->point.y;
+            int32_t xClone = selected->point.x;
+
+            // ABOVE
+            while (yClone >= 0) {
+
+                if (yClone != selected->point.y) {
+                    if (coords.at(yClone * 8 + selected->point.x)->type != Type::TYPE_NONE)
+                        break;
+                    this->possibleLocations.push_back(yClone * 8 + selected->point.x);
+                }
+                yClone--;
             }
+
+            // BELOW
+            yClone = selected->point.y;
+            while (yClone <= 7) {
+                if (yClone != selected->point.y) {
+                    if (coords.at(yClone * 8 + selected->point.x)->type != Type::TYPE_NONE)
+                        break;
+                    this->possibleLocations.push_back(yClone * 8 + selected->point.x);
+                }
+
+                yClone++;
+            }
+            // LEFT
+            while (xClone >= 0) {
+                if (xClone != selected->point.x) {
+                    if (coords.at(selected->point.y * 8 + xClone)->type != Type::TYPE_NONE)
+                        break;
+                    this->possibleLocations.push_back(selected->point.y * 8 + xClone);
+                }
+                xClone--;
+            }
+            // RIGHT
+            xClone = selected->point.x;
+            while (xClone <= 7) {
+                if (xClone != selected->point.x) {
+                    if (coords.at(selected->point.y * 8 + xClone)->type != Type::TYPE_NONE)
+                        break;
+                    this->possibleLocations.push_back(selected->point.y * 8 + xClone);
+                }
+                xClone++;
+            }
+        }
             break;
 
         default:

@@ -118,7 +118,7 @@ void SDLHandler::renderPossibleLocations(std::vector<int> options) {
     std::cout << "Rendering possible locations... \n";
     SDL_SetRenderDrawColor(this->renderer, 255, 235, 153, SDL_ALPHA_OPAQUE);
     for (const int& location : options) {
-        if(squares.at(location))
+        if(squares.at(location)) 
             SDL_RenderFillRect(renderer, this->squares.at(location));
     }
     SDL_RenderPresent(renderer);

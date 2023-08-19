@@ -24,5 +24,7 @@ public:
 
     void renderPossibleLocations(std::vector<int> options);
 
+    void renderPossibleKills(std::vector<int> options);
+
     
 };

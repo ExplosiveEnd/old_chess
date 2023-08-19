@@ -48,6 +48,8 @@ namespace Chess{
 
                         if (game->secondClick) {
                             handler->renderPossibleLocations(game->possibleLocations);
+                            handler->renderPossibleKills(game->possibleKills);
+                            handler->renderPieces(game->coords);
                         }
                         else {
                             SDL_RenderClear(handler->renderer);

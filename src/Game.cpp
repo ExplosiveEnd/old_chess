@@ -140,8 +140,6 @@ void Game::createPieces(SDL_Renderer* renderer) {
                 }
             }
         }
-
-        std::vector<int> testing;
         
         // Ties texture to Piece* and populates coords vector
         for (auto piece : pieces) {
@@ -208,15 +206,11 @@ void Game::handleClick(){
     else{
         Game::movePiece(this->selectedPiece);
         this->possibleLocations.clear();
+        this->possibleKills.clear();
     }
 }
 
 void Game::movePiece(Piece* piece){
-    std::cout << "Coords pre-move check: ";
-    for (const auto x : coords) {
-        std::cout << x->typeString << " ";
-    }
-    std::cout << std::endl;
 
     int32_t nextClickX, nextClickY;
 
@@ -243,11 +237,40 @@ void Game::movePiece(Piece* piece){
         replaced->point.y = oldY;
     }
 
-    std::cout << "Coords post-move check: ";
-    for (const auto x : coords) {
-        std::cout << x->typeString << " ";
+    Point em;
+
+
+    if (possibleKills.size()) {
+        it = std::find(this->possibleKills.begin(), this->possibleKills.end(), nextClickY * 8 + nextClickX);
+        if (it != possibleKills.end()) {
+            em.x = replaced->point.x;
+            em.y = replaced->point.y;
+
+            replaced = new Piece(Type::TYPE_NONE, em, Color::COLOR_NONE);
+
+            coords.at(replaced->point.y * 8 + replaced->point.x) = replaced;
+
+            replaced->point.x = oldX;
+            replaced->point.y = oldY;
+            sortCoords();
+
+            piece->point.x = nextClickX;
+            piece->point.y = nextClickY;
+        }
     }
-    std::cout << std::endl;
+
+    std::sort(this->coords.begin(), this->coords.end(), less_than_point());
+    std::cout << "\nPost-move: ";
+
+    for (const auto& x : coords) {
+        std::cout << x->typeString << " -> (" << x->point.x << ", " << x->point.y << ")\n";
+    }
+
+    //std::cout << "Coords post-move check: ";
+    //for (const auto x : coords) {
+    //    std::cout << x->typeString << " ";
+    //}
+    //std::cout << std::endl;
 
     this->mouseX = -1;
     this->mouseY = -1;   
@@ -260,22 +283,34 @@ void Game::movePiece(Piece* piece){
 void Game::setPossibleLocations(Piece* selected) {
     std::cout << "Possible Locations: ";
     for (int i = 0; i < 64; i++) {
-        //std::cout << "Piece type: " << coords.at(i)->typeString << " at " << i << "\n";
         switch (selected->type) {
         case(Type::PAWN):
             // Checks if pawn can move up two / one
             if (selected->pawnFirstMove) {
                 // Checks if pawn is at END
-                if (selected->point.y == 0) {
+                if (selected->point.y == 0 ) {
                     break;
                 }
                 else {
-                    this->possibleLocations.push_back((selected->point.y - 1) * 8 + selected->point.x);
+                    if (coords.at((selected->point.y - 2) * 8 + selected->point.x)->type != TYPE_NONE) {
+                        this->possibleKills.push_back((selected->point.y - 2) * 8 + selected->point.x);
+                        break;
+                    }
                     this->possibleLocations.push_back((selected->point.y - 2) * 8 + selected->point.x);
+                    
+                    if (coords.at((selected->point.y - 1) * 8 + selected->point.x)->type != TYPE_NONE) {
+                        this->possibleKills.push_back((selected->point.y - 1) * 8 + selected->point.x);
+                        break;
+                    }
+                    this->possibleLocations.push_back((selected->point.y - 1) * 8 + selected->point.x);
                     selected->pawnFirstMove = false;
                 }
             }
             else {
+                if (coords.at((selected->point.y - 1) * 8 + selected->point.x)->type != TYPE_NONE) {
+                    this->possibleKills.push_back((selected->point.y - 1) * 8 + selected->point.x);
+                    break;
+                }
                 this->possibleLocations.push_back((selected->point.y - 1) * 8 + selected->point.x);
             }
             break;
@@ -567,6 +602,10 @@ void Game::setPossibleLocations(Piece* selected) {
         }
 
     }
+}
+
+void setPossibleKills(Piece* selected) {
+    return;
 }
 
 bool validMove() {

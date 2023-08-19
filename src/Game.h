@@ -28,6 +28,9 @@ public:
 
     // Vector containing possible move locations after click
     std::vector<int> possibleLocations;
+
+    //
+    std::vector<int> possibleKills;
     
     // Creates Pieces and populates vector
     void createPieces(SDL_Renderer* renderer);

@@ -7,8 +7,11 @@
 struct Point{
     int32_t x;
     int32_t y;
-};
 
+    bool operator==(const Point b) {
+        return b.x == x && b.y == y;
+    }
+};
 
 enum Type: int32_t{
     TYPE_NONE = 0,

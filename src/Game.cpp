@@ -575,36 +575,60 @@ void Game::setPossibleLocations(Piece* selected) {
                 // ABOVE-LEFT
                 if (selected->point.x > 0 && coords.at((selected->point.y - 2) * 8 + (selected->point.x - 1))->type == Type::TYPE_NONE)
                     this->possibleLocations.push_back((selected->point.y - 2) * 8 + (selected->point.x - 1));
+                // ENEMY TOP-LEFT
+                else if (selected->point.x > 0 && coords.at((selected->point.y - 2) * 8 + (selected->point.x - 1))->color != selected->color)
+                    this->possibleKills.push_back((selected->point.y - 2) * 8 + (selected->point.x - 1));
+
                 // ABOVE-RIGHT
                 if (selected->point.x < 7 && coords.at((selected->point.y - 2) * 8 + (selected->point.x + 1))->type == Type::TYPE_NONE)
                     this->possibleLocations.push_back((selected->point.y - 2) * 8 + (selected->point.x + 1));
+                else if (selected->point.x < 7 && coords.at((selected->point.y - 2) * 8 + (selected->point.x + 1))->color != selected->color)
+                    this->possibleKills.push_back((selected->point.y - 2) * 8 + (selected->point.x + 1));
             }
             // BELOW CHECK
             if (selected->point.y < 6) {
                 // BELOW-LEFT
                 if (selected->point.x > 0 && coords.at((selected->point.y + 2) * 8 + (selected->point.x - 1))->type == Type::TYPE_NONE)
                     this->possibleLocations.push_back((selected->point.y + 2) * 8 + (selected->point.x - 1));
+                else if (selected->point.x > 0 && coords.at((selected->point.y + 2) * 8 + (selected->point.x - 1))->color != selected->color)
+                    this->possibleKills.push_back((selected->point.y + 2) * 8 + (selected->point.x - 1));
+
                 // BELOW-RIGHT
                 if (selected->point.x < 7 && coords.at((selected->point.y + 2) * 8 + (selected->point.x + 1))->type == Type::TYPE_NONE)
                     this->possibleLocations.push_back((selected->point.y + 2) * 8 + (selected->point.x + 1));
+                else if (selected->point.x < 7 && coords.at((selected->point.y + 2) * 8 + (selected->point.x + 1))->color != selected->color)
+                    this->possibleKills.push_back((selected->point.y + 2) * 8 + (selected->point.x + 1));
             }
             // LEFT CHECK
             if (selected->point.x > 1) {
                 // LEFT-ABOVE
                 if (selected->point.y > 0 && coords.at((selected->point.y - 1) * 8 + (selected->point.x - 2))->type == Type::TYPE_NONE)
                     this->possibleLocations.push_back((selected->point.y - 1) * 8 + (selected->point.x - 2));
+                else if (selected->point.y > 0 && coords.at((selected->point.y - 1) * 8 + (selected->point.x - 2))->color != selected->color)
+                    this->possibleKills.push_back((selected->point.y - 1) * 8 + (selected->point.x - 2));
+
                 // LEFT-BELOW
                 if (selected->point.y < 7 && coords.at((selected->point.y + 1) * 8 + (selected->point.x - 2))->type == Type::TYPE_NONE)
                     this->possibleLocations.push_back((selected->point.y + 1) * 8 + (selected->point.x - 2));
+                // ENEMY LEFT-BELOW
+                else if (selected->point.y < 7 && coords.at((selected->point.y + 1) * 8 + (selected->point.x - 2))->color != selected->color)
+                    this->possibleKills.push_back((selected->point.y + 1) * 8 + (selected->point.x - 2));
+
             }
             // RIGHT CHECK
             if (selected->point.x < 6) {
                 // RIGHT-ABOVE
                 if (selected->point.y > 0 && coords.at((selected->point.y - 1) * 8 + (selected->point.x + 2))->type == Type::TYPE_NONE)
                     this->possibleLocations.push_back((selected->point.y - 1) * 8 + (selected->point.x + 2));
+                // ENEMY RIGHT-ABOVE
+                else if (selected->point.y > 0 && coords.at((selected->point.y - 1) * 8 + (selected->point.x + 2))->color != selected->color)
+                    this->possibleKills.push_back((selected->point.y - 1) * 8 + (selected->point.x + 2));
+
                 // RIGHT-BELOW
                 if (selected->point.y < 7 && coords.at((selected->point.y + 1) * 8 + (selected->point.x + 2))->type == Type::TYPE_NONE)
                     this->possibleLocations.push_back((selected->point.y + 1) * 8 + (selected->point.x + 2));
+                else if (selected->point.y < 7 && coords.at((selected->point.y + 1) * 8 + (selected->point.x + 2))->color != selected->color)
+                    this->possibleKills.push_back((selected->point.y + 1) * 8 + (selected->point.x + 2));
             }
             break;
 
@@ -616,6 +640,8 @@ void Game::setPossibleLocations(Piece* selected) {
             int32_t xClone = selected->point.x;
             while (yClone > 0 && xClone > 0) {
                 if (coords.at((yClone - 1) * 8 + (xClone - 1))->type != Type::TYPE_NONE) {
+                    if (coords.at((yClone - 1) * 8 + (xClone - 1))->color != selected->color)
+                        this->possibleKills.push_back((yClone - 1) * 8 + (xClone - 1));
                     break;
                 }
                 this->possibleLocations.push_back((yClone - 1) * 8 + (xClone - 1));
@@ -629,6 +655,8 @@ void Game::setPossibleLocations(Piece* selected) {
             xClone = selected->point.x;
             while (yClone > 0 && xClone < 7) {
                 if (coords.at((yClone - 1) * 8 + (xClone + 1))->type != Type::TYPE_NONE) {
+                    if (coords.at((yClone - 1) * 8 + (xClone + 1))->color != selected->color)
+                        this->possibleKills.push_back((yClone - 1) * 8 + (xClone + 1));
                     break;
                 }
                 this->possibleLocations.push_back((yClone - 1) * 8 + (xClone + 1));
@@ -642,6 +670,8 @@ void Game::setPossibleLocations(Piece* selected) {
             xClone = selected->point.x;
             while (yClone < 7 && xClone > 0) {
                 if (coords.at((yClone + 1) * 8 + (xClone - 1))->type != Type::TYPE_NONE) {
+                    if (coords.at((yClone + 1) * 8 + (xClone - 1))->color != selected->color)
+                        this->possibleKills.push_back((yClone + 1) * 8 + (xClone - 1));
                     break;
                 }
                 this->possibleLocations.push_back((yClone + 1) * 8 + (xClone - 1));
@@ -654,6 +684,8 @@ void Game::setPossibleLocations(Piece* selected) {
             xClone = selected->point.x;
             while (yClone < 7 && xClone < 7) {
                 if (coords.at((yClone + 1) * 8 + (xClone + 1))->type != Type::TYPE_NONE) {
+                    if (coords.at((yClone + 1) * 8 + (xClone + 1))->color != selected->color)
+                        this->possibleKills.push_back((yClone + 1) * 8 + (xClone + 1));
                     break;
                 }
                 this->possibleLocations.push_back((yClone + 1) * 8 + (xClone + 1));
@@ -669,10 +701,15 @@ void Game::setPossibleLocations(Piece* selected) {
 
             // ABOVE
             while (yClone >= 0) {
-
+                // Ensures not itself
                 if (yClone != selected->point.y) {
-                    if (coords.at(yClone * 8 + selected->point.x)->type != Type::TYPE_NONE)
+                    // Makes sure kill is on a real piece
+                    if (coords.at(yClone * 8 + selected->point.x)->type != Type::TYPE_NONE) {
+                        // Makes sure piece is enemy
+                        if (coords.at(yClone * 8 + selected->point.x)->color != selected->color)
+                            this->possibleKills.push_back(yClone * 8 + selected->point.x);
                         break;
+                    }
                     this->possibleLocations.push_back(yClone * 8 + selected->point.x);
                 }
                 yClone--;
@@ -682,8 +719,11 @@ void Game::setPossibleLocations(Piece* selected) {
             yClone = selected->point.y;
             while (yClone <= 7) {
                 if (yClone != selected->point.y) {
-                    if (coords.at(yClone * 8 + selected->point.x)->type != Type::TYPE_NONE)
+                    if (coords.at(yClone * 8 + selected->point.x)->type != Type::TYPE_NONE) {
+                        if (coords.at(yClone * 8 + selected->point.x)->color != selected->color)
+                            this->possibleKills.push_back(yClone * 8 + selected->point.x);
                         break;
+                    }
                     this->possibleLocations.push_back(yClone * 8 + selected->point.x);
                 }
 
@@ -692,8 +732,11 @@ void Game::setPossibleLocations(Piece* selected) {
             // LEFT
             while (xClone >= 0) {
                 if (xClone != selected->point.x) {
-                    if (coords.at(selected->point.y * 8 + xClone)->type != Type::TYPE_NONE)
+                    if (coords.at(selected->point.y * 8 + xClone)->type != Type::TYPE_NONE) {
+                        if (coords.at(selected->point.y * 8 + xClone)->color != selected->color)
+                            this->possibleKills.push_back(selected->point.y * 8 + xClone);
                         break;
+                    }
                     this->possibleLocations.push_back(selected->point.y * 8 + xClone);
                 }
                 xClone--;
@@ -702,8 +745,11 @@ void Game::setPossibleLocations(Piece* selected) {
             xClone = selected->point.x;
             while (xClone <= 7) {
                 if (xClone != selected->point.x) {
-                    if (coords.at(selected->point.y * 8 + xClone)->type != Type::TYPE_NONE)
+                    if (coords.at(selected->point.y * 8 + xClone)->type != Type::TYPE_NONE) {
+                        if (coords.at(selected->point.y * 8 + xClone)->color != selected->color)
+                            this->possibleKills.push_back(selected->point.y * 8 + xClone);
                         break;
+                    }
                     this->possibleLocations.push_back(selected->point.y * 8 + xClone);
                 }
                 xClone++;

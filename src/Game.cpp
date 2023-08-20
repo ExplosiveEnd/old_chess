@@ -336,13 +336,13 @@ void Game::setPossibleLocations(Piece* selected) {
             else if(selected->color == Color::WHITE) {
                 // Checks if pawn can move up two / one
                 if (selected->pawnFirstMove) {
-                    // TOP-LEFT ENEMY CHECK FIRST MOVE
+                    // BOTTOM-LEFT ENEMY CHECK FIRST MOVE
                     if (coords.at((selected->point.y + 1) * 8 + selected->point.x - 1)->type != Type::TYPE_NONE
                         && coords.at((selected->point.y + 1) * 8 + selected->point.x - 1)->color != selected->color) {
-                        this->possibleKills.push_back((selected->point.y + 2) * 8 + selected->point.x - 1);
+                        this->possibleKills.push_back((selected->point.y + 1) * 8 + selected->point.x - 1);
                     }
 
-                    // TOP-RIGHT ENEMY CHECK FIRST MOVE
+                    // BOTTOM-RIGHT ENEMY CHECK FIRST MOVE
                     if (coords.at((selected->point.y + 1) * 8 + selected->point.x + 1)->type != Type::TYPE_NONE
                         && coords.at((selected->point.y + 1) * 8 + selected->point.x + 1)->color != selected->color) {
                         this->possibleKills.push_back((selected->point.y + 1) * 8 + selected->point.x + 1);
@@ -465,6 +465,8 @@ void Game::setPossibleLocations(Piece* selected) {
             xClone = selected->point.x;
             while (yClone > 0 && xClone < 7) {
                 if (coords.at((yClone - 1) * 8 + (xClone + 1))->type != Type::TYPE_NONE) {
+                    if (coords.at((yClone - 1) * 8 + (xClone + 1))->color != selected->color)
+                        this->possibleKills.push_back((yClone - 1) * 8 + (xClone + 1));
                     break;
                 }
                 this->possibleLocations.push_back((yClone - 1) * 8 + (xClone + 1));
@@ -478,6 +480,8 @@ void Game::setPossibleLocations(Piece* selected) {
             xClone = selected->point.x;
             while (yClone < 7 && xClone > 0) {
                 if (coords.at((yClone + 1) * 8 + (xClone - 1))->type != Type::TYPE_NONE) {
+                    if (coords.at((yClone + 1) * 8 + (xClone - 1))->color != selected->color)
+                        this->possibleKills.push_back((yClone + 1) * 8 + (xClone - 1));
                     break;
                 }
                 this->possibleLocations.push_back((yClone + 1) * 8 + (xClone - 1));
@@ -490,6 +494,8 @@ void Game::setPossibleLocations(Piece* selected) {
             xClone = selected->point.x;
             while (yClone < 7 && xClone < 7) {
                 if (coords.at((yClone + 1) * 8 + (xClone + 1))->type != Type::TYPE_NONE) {
+                    if (coords.at((yClone + 1) * 8 + (xClone + 1))->color != selected->color)
+                        this->possibleKills.push_back((yClone + 1) * 8 + (xClone + 1));
                     break;
                 }
                 this->possibleLocations.push_back((yClone + 1) * 8 + (xClone + 1));
@@ -505,32 +511,61 @@ void Game::setPossibleLocations(Piece* selected) {
                 // TOP-LEFT
                 if (selected->point.x > 0 && coords.at((selected->point.y - 1) * 8 + (selected->point.x - 1))->type == Type::TYPE_NONE)
                     this->possibleLocations.push_back((selected->point.y - 1) * 8 + (selected->point.x-1));
+                // ENEMY TOP-LEFT 
+                else if (coords.at((selected->point.y - 1) * 8 + (selected->point.x - 1))->color != selected->color) 
+                        this->possibleKills.push_back((selected->point.y - 1) * 8 + (selected->point.x - 1));
+
                 // TOP-RIGHT
                 if(selected->point.x < 7 && coords.at((selected->point.y - 1) * 8 + (selected->point.x + 1))->type == Type::TYPE_NONE)
                     this->possibleLocations.push_back((selected->point.y - 1) * 8 + (selected->point.x + 1));
+                // ENEMY TOP-RIGHT
+                else if (coords.at((selected->point.y - 1) * 8 + (selected->point.x + 1))->color != selected->color)
+                        this->possibleKills.push_back((selected->point.y - 1) * 8 + (selected->point.x + 1));
+
+                // FORWARD
                 if (coords.at((selected->point.y - 1) * 8 + selected->point.x)->type == Type::TYPE_NONE)
                     this->possibleLocations.push_back((selected->point.y - 1) * 8 + selected->point.x);
+                // ENEMY FORWARD
+                else if (coords.at((selected->point.y - 1) * 8 + selected->point.x)->color != selected->color)
+                    this->possibleKills.push_back((selected->point.y - 1) * 8 + selected->point.x);
             }
             // BELOW
             if (selected->point.y < 7) {
                 // BOTTOM-LEFT
                 if (selected->point.x > 0 && coords.at((selected->point.y + 1) * 8 + (selected->point.x - 1))->type == Type::TYPE_NONE)
                     this->possibleLocations.push_back((selected->point.y + 1) * 8 + (selected->point.x - 1));
+                // ENEMY BOTTOM-LEFT
+                else if (coords.at((selected->point.y + 1) * 8 + (selected->point.x - 1))->color != selected->color)
+                    this->possibleKills.push_back((selected->point.y + 1) * 8 + (selected->point.x - 1));
                 // BOTTOM-RIGHT
                 if (selected->point.x < 7 && coords.at((selected->point.y + 1) * 8 + (selected->point.x + 1))->type == Type::TYPE_NONE)
                     this->possibleLocations.push_back((selected->point.y + 1) * 8 + (selected->point.x + 1));
+                // ENEMY BOTTOM-RIGHT
+                else if (coords.at((selected->point.y + 1) * 8 + (selected->point.x + 1))->color != selected->color)
+                    this->possibleKills.push_back((selected->point.y + 1) * 8 + (selected->point.x + 1));
+
+                // BEHIND
                 if(coords.at((selected->point.y + 1) * 8 + selected->point.x)->type == Type::TYPE_NONE)
                     this->possibleLocations.push_back((selected->point.y + 1) * 8 + selected->point.x);
+                // ENEMY BEHIND
+                else if(coords.at((selected->point.y + 1) * 8 + selected->point.x)->color != selected->color)
+                    this->possibleKills.push_back((selected->point.y + 1) * 8 + selected->point.x);
             }
             // LEFT
             if (selected->point.x > 0) {
                 if(coords.at(selected->point.y * 8 + (selected->point.x - 1))->type == Type::TYPE_NONE)
                     this->possibleLocations.push_back(selected->point.y * 8 + (selected->point.x - 1));
+                // ENEMY LEFT
+                else if (coords.at(selected->point.y * 8 + (selected->point.x - 1))->color != selected->color) 
+                    this->possibleKills.push_back(selected->point.y * 8 + (selected->point.x - 1));
+                
             }
             // RIGHT
             if (selected->point.x < 7) {
                 if (coords.at(selected->point.y * 8 + (selected->point.x + 1))->type == Type::TYPE_NONE)
-                    this->possibleLocations.push_back(selected->point.y * 8 + (selected->point.x+1));
+                    this->possibleLocations.push_back(selected->point.y * 8 + (selected->point.x + 1));
+                else if (coords.at(selected->point.y * 8 + (selected->point.x + 1))->color != selected->color)
+                    this->possibleKills.push_back(selected->point.y * 8 + (selected->point.x + 1));
             }
             break;
 

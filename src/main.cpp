@@ -46,7 +46,7 @@ namespace Chess{
                     case SDL_MOUSEBUTTONDOWN:
                         game->handleClick();
 
-                        if (game->secondClick) {
+                        if (game->secondClick && game->selectedPiece->color == game->turn) {
                             handler->renderPossibleLocations(game->possibleLocations);
                             handler->renderPossibleKills(game->possibleKills);
                             handler->renderPieces(game->coords);
@@ -54,7 +54,6 @@ namespace Chess{
                         else {
                             SDL_RenderClear(handler->renderer);
                             handler->createBackground();
-                            //game->sortCoords();
                             handler->renderPieces(game->coords);
                             SDL_RenderPresent(handler->renderer);
                         }

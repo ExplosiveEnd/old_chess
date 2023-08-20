@@ -29,8 +29,11 @@ public:
     // Vector containing possible move locations after click
     std::vector<int> possibleLocations;
 
-    //
+    // Vector containing possible kill locations after click
     std::vector<int> possibleKills;
+
+    // Contains current turn color
+    Color turn = Color::BLACK;
     
     // Creates Pieces and populates vector
     void createPieces(SDL_Renderer* renderer);

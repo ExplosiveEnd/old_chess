@@ -212,66 +212,65 @@ void Game::handleClick(){
 
 void Game::movePiece(Piece* piece){
 
-    int32_t nextClickX, nextClickY;
+    if (piece->color == this->turn) {
+        int32_t nextClickX, nextClickY;
 
-    SDL_GetMouseState(&nextClickX, &nextClickY);
-    nextClickX = int(nextClickX/100);
-    nextClickY = int(nextClickY/100);
-    std::cout << "Second Click: (" << nextClickX << ", " << nextClickY << ") \n";
-    std::cout << "Piece: " << selectedPiece->typeString << "\n";
+        SDL_GetMouseState(&nextClickX, &nextClickY);
+        nextClickX = int(nextClickX / 100);
+        nextClickY = int(nextClickY / 100);
+        std::cout << "Second Click: (" << nextClickX << ", " << nextClickY << ") \n";
+        std::cout << "Piece: " << this->selectedPiece->typeString << "\n";
 
-    int32_t oldX = piece->point.x;
-    int32_t oldY = piece->point.y;
-        
-
-    auto replaced = coords.at(nextClickY * 8 + nextClickX);
-    std::cout << "Replacing " << replaced->typeString << std::endl;
-    
-    // Ensures the second click is a validMove (EMPTY target)
-    auto it = std::find(this->possibleLocations.begin(), this->possibleLocations.end(), nextClickY * 8 + nextClickX);
-    if (it != possibleLocations.end()) {
-        piece->point.x = nextClickX;
-        piece->point.y = nextClickY;
-
-        replaced->point.x = oldX;
-        replaced->point.y = oldY;
-        piece->pawnFirstMove = false;
-    }
-
-    Point em;
+        int32_t oldX = piece->point.x;
+        int32_t oldY = piece->point.y;
 
 
-    if (possibleKills.size()) {
-        it = std::find(this->possibleKills.begin(), this->possibleKills.end(), nextClickY * 8 + nextClickX);
-        if (it != possibleKills.end()) {
-            em.x = replaced->point.x;
-            em.y = replaced->point.y;
+        auto replaced = coords.at(nextClickY * 8 + nextClickX);
+        std::cout << "Replacing " << replaced->typeString << std::endl;
 
-            replaced = new Piece(Type::TYPE_NONE, em, Color::COLOR_NONE);
-
-            coords.at(replaced->point.y * 8 + replaced->point.x) = replaced;
+        // Ensures the second click is a validMove (EMPTY target)
+        auto it = std::find(this->possibleLocations.begin(), this->possibleLocations.end(), nextClickY * 8 + nextClickX);
+        if (it != possibleLocations.end()) {
+            std::cout << "FOUND IT";
+            piece->point.x = nextClickX;
+            piece->point.y = nextClickY;
 
             replaced->point.x = oldX;
             replaced->point.y = oldY;
-            sortCoords();
+            piece->pawnFirstMove = false;
+            this->turn = this->turn == Color::BLACK ? Color::WHITE : Color::BLACK;
+        }
 
-            piece->point.x = nextClickX;
-            piece->point.y = nextClickY;
+        Point em;
+
+
+        if (possibleKills.size()) {
+            it = std::find(this->possibleKills.begin(), this->possibleKills.end(), nextClickY * 8 + nextClickX);
+            if (it != possibleKills.end()) {
+                em.x = replaced->point.x;
+                em.y = replaced->point.y;
+
+                replaced = new Piece(Type::TYPE_NONE, em, Color::COLOR_NONE);
+
+                coords.at(replaced->point.y * 8 + replaced->point.x) = replaced;
+
+                replaced->point.x = oldX;
+                replaced->point.y = oldY;
+                sortCoords();
+
+                piece->point.x = nextClickX;
+                piece->point.y = nextClickY;
+                this->turn = this->turn == Color::BLACK ? Color::WHITE : Color::BLACK;
+            }
         }
     }
 
-    std::sort(this->coords.begin(), this->coords.end(), less_than_point());
-    std::cout << "\nPost-move: ";
+    //std::sort(this->coords.begin(), this->coords.end(), less_than_point());
+    //std::cout << "\nPost-move: ";
 
-    for (const auto& x : coords) {
-        std::cout << x->typeString << " -> (" << x->point.x << ", " << x->point.y << ")\n";
-    }
-
-    //std::cout << "Coords post-move check: ";
-    //for (const auto x : coords) {
-    //    std::cout << x->typeString << " ";
+    //for (const auto& x : coords) {
+    //    std::cout << x->typeString << " -> (" << x->point.x << ", " << x->point.y << ")\n";
     //}
-    //std::cout << std::endl;
 
     this->mouseX = -1;
     this->mouseY = -1;   

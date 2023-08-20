@@ -235,6 +235,7 @@ void Game::movePiece(Piece* piece){
 
         replaced->point.x = oldX;
         replaced->point.y = oldY;
+        piece->pawnFirstMove = false;
     }
 
     Point em;
@@ -303,7 +304,7 @@ void Game::setPossibleLocations(Piece* selected) {
                         break;
                     }
                     this->possibleLocations.push_back((selected->point.y - 1) * 8 + selected->point.x);
-                    selected->pawnFirstMove = false;
+                    
                 }
             }
             else {

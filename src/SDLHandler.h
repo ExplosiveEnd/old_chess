@@ -22,9 +22,14 @@ public:
     // Renders changes to pieces
     void renderPieces(std::vector<Piece*> pieces);
 
+    // Renders possible MOVE locations
     void renderPossibleLocations(std::vector<int> options);
 
+    // Renders possible KILL locations
     void renderPossibleKills(std::vector<int> options);
+
+    // Renders tile for selected piece
+    void renderSelected(Piece* selected);
 
     
 };

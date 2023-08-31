@@ -47,6 +47,7 @@ namespace Chess{
                         game->handleClick();
 
                         if (game->secondClick && game->selectedPiece->color == game->turn) {
+                            handler->renderSelected(game->selectedPiece);
                             handler->renderPossibleLocations(game->possibleLocations);
                             handler->renderPossibleKills(game->possibleKills);
                             handler->renderPieces(game->coords);
@@ -54,6 +55,7 @@ namespace Chess{
                         else {
                             SDL_RenderClear(handler->renderer);
                             handler->createBackground();
+                            
                             handler->renderPieces(game->coords);
                             SDL_RenderPresent(handler->renderer);
                         }

@@ -137,3 +137,9 @@ void SDLHandler::renderPossibleKills(std::vector<int> options) {
         SDL_RenderPresent(renderer);
     }
 }
+
+void SDLHandler::renderSelected(Piece* selected) {
+    std::cout << "Rendering selected piece... \n";
+    SDL_SetRenderDrawColor(this->renderer, 179, 204, 255, SDL_ALPHA_OPAQUE);
+    SDL_RenderFillRect(this->renderer, this->squares.at(selected->point.y*8 + selected->point.x));
+}
